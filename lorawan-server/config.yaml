@@ -11,13 +11,9 @@ arch:
   - amd64
   - i386
 ports:
-  8080/tcp: null
   1680/udp: 1680
-  8443/tcp: null
 ports_description:
-  8080/tcp: HTTP Web Interface
   1680/udp: Data From port_forwarders
-  8443/tcp: HTTPS Web interface
 startup: services
 backup: cold
 boot: auto
