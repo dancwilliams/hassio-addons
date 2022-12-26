@@ -12,11 +12,11 @@ FROM erlang:21-alpine
 ## Not likely to change with rebuilds
 
 # data from port_forwarders
-EXPOSE 1680/udp
+# EXPOSE 1680/udp
 # http admin interface
-EXPOSE 8080/tcp
+# EXPOSE 8080/tcp
 # https admin interface
-EXPOSE 8443/tcp
+# EXPOSE 8443/tcp
 
 # volume for the mnesia database and logs
 VOLUME /storage

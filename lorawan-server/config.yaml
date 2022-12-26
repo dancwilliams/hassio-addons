@@ -1,6 +1,6 @@
 ---
-version: 0.0.5
-slug: lorawamn-server
+version: 0.0.6
+slug: lorawan_server
 name: LoRaWAN Server
 description: Addon to allow local LoRaWAN services on HASS
 arch:
