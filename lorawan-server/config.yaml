@@ -1,18 +1,24 @@
 ---
-version: 0.0.6
+version: 0.0.7
 slug: lorawan_server
 name: LoRaWAN Server
 description: Addon to allow local LoRaWAN services on HASS
+ingress: true
+ingress_port: 8080
 arch:
-  - armhf
   - armv7
   - aarch64
   - amd64
   - i386
 ports:
-  8080/tcp: 9080
+  8080/tcp: null
   1680/udp: 1680
-  8443/tcp: 9443
-startup: application
+  8443/tcp: null
+ports_description:
+  8080/tcp: HTTP Web Interface
+  1680/udp: Data From port_forwarders
+  8443/tcp: HTTPS Web interface
+startup: services
+backup: cold
 boot: auto
 homeassistant_api: true

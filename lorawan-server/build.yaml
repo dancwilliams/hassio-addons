@@ -1,10 +1,9 @@
 ---
 build_from:
-  aarch64: ghcr.io/home-assistant/aarch64-base-debian:bullseye
-  amd64: ghcr.io/home-assistant/amd64-base-debian:bullseye
-  armhf: ghcr.io/home-assistant/armhf-base-debian:bullseye
-  armv7: ghcr.io/home-assistant/armv7-base-debian:bullseye
-  i386: ghcr.io/home-assistant/i386-base-debian:bullseye
+  aarch64: erlang:21-alpine
+  amd64: erlang:21-alpine
+  armv7: erlang:21-alpine
+  i386: erlang:21-alpine
 args:
   LORAWAN_SERVER_VERSION: 0.6.7
   ERLANG_VERSION: 1:21.3.8.24
