@@ -1,5 +1,5 @@
 ---
-version: 0.0.4
+version: 0.0.5
 slug: lorawamn-server
 name: LoRaWAN Server
 description: Addon to allow local LoRaWAN services on HASS
@@ -10,8 +10,9 @@ arch:
   - amd64
   - i386
 ports:
-  8080/tcp: 8080
+  8080/tcp: 9080
   1680/udp: 1680
+  8443/tcp: 9443
 startup: application
 boot: auto
 homeassistant_api: true
