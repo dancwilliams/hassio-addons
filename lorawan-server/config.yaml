@@ -1,11 +1,11 @@
 ---
-version: 0.0.10
+version: 0.0.11
 slug: lorawan_server
 name: LoRaWAN Server
 description: Addon to allow local LoRaWAN services on HASS
 # ingress: true
 # ingress_port: 8080
-codenotary: true
+codenotary: codenotary@threatfax.com
 arch:
   - armv7
   - aarch64
