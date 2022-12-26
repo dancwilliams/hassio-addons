@@ -3,46 +3,15 @@ version: 0.0.1
 slug: lorawamn-server
 name: LoRaWAN Server
 description: Addon to allow local LoRaWAN services on HASS
-# url: https://github.com/home-assistant/hassio-addons/tree/master/mosquitto
-# codenotary: notary@home-assistant.io
 arch:
   - armhf
   - armv7
   - aarch64
   - amd64
   - i386
-#auth_api: true
-#discovery:
-#  - mqtt
-# image: homeassistant/{arch}-addon-mosquitto
-#map:
-#  - ssl
-#  - share
-#options:
-#  logins: []
-#  require_certificate: false
-#  certfile: fullchain.pem
-#  keyfile: privkey.pem
-#  customize:
-#    active: false
-#    folder: mosquitto
 ports:
   8080/tcp: 8080
   1680/udp: 1680
-#schema:
-#  logins:
-#    - username: str
-#      password: password
-#  require_certificate: bool
-#  certfile: str
-#  cafile: str?
-#  keyfile: str
-#  customize:
-#    active: bool
-#    folder: str
-#  debug: bool?
-#services:
-#  - mqtt:provide
-startup: system
-watchdog: udp://[HOST]:1680
-init: false
+startup: application
+boot: auto
+homeassistant_api: true
