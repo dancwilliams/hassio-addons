@@ -4,6 +4,7 @@ version: 0.5.1
 slug: monerod
 arch:
 - aarch64
+- amd64
 description: Monerod pour HomeAssistant
 codenotary: erdnaxela02@hotmail.fr
 init: false
