@@ -37,4 +37,4 @@ schema:
   p2pool_UPnP_portstratum_forwarding: bool?
   p2pool_print_status: int(1,)?
   p2pool_loglevel: list(0|1|2|3|4|5|6)?
-image: ghcr.io/casse-boubou/p2pool/{arch}
+image: ghcr.io/dancwilliams/p2pool/{arch}

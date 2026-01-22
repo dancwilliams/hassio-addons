@@ -32,4 +32,4 @@ schema:
   sync_pruned_blocks: bool?
   db_sync_mode: list(safe|fast|fastest)?
   log_level: list(info|notice|debug|trace|all|)?
-image: ghcr.io/casse-boubou/monerod/{arch}
+image: ghcr.io/dancwilliams/monerod/{arch}
