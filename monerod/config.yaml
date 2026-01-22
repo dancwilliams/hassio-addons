@@ -1,0 +1,34 @@
+name: Monerod
+url: https://github.com/dancwilliams/addon-monerod
+version: 0.5.1
+slug: monerod
+arch:
+- aarch64
+description: Monerod pour HomeAssistant
+codenotary: erdnaxela02@hotmail.fr
+init: false
+map:
+- media:rw
+auth_api: true
+ports:
+  18080/tcp: 18080
+  18081/tcp: 18081
+  18083/tcp: 18083
+ports_description:
+  18080/tcp: Monerod p2p port
+  18081/tcp: Monerod node RPC API port
+  18083/tcp: ZMQ pub port for p2pool
+options:
+  monerod_conf_overrides: []
+  data_dir: bitmonero
+schema:
+  monerod_conf_overrides:
+  - property: str
+    value: str
+  data_dir: str
+  max_log_file_size: int(0,)?
+  prune_blockchain: bool?
+  sync_pruned_blocks: bool?
+  db_sync_mode: list(safe|fast|fastest)?
+  log_level: list(info|notice|debug|trace|all|)?
+image: ghcr.io/casse-boubou/monerod/{arch}

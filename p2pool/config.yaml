@@ -1,0 +1,39 @@
+name: P2Pool
+url: https://github.com/dancwilliams/addon-p2pool
+version: 3.2.1
+slug: p2pool
+arch:
+- aarch64
+description: P2pool pour HomeAssistant
+codenotary: erdnaxela02@hotmail.fr
+init: false
+auth_api: true
+ports:
+  3333/tcp: 3333
+  37889/tcp: 37889
+  37888/tcp: 37888
+ports_description:
+  3333/tcp: Port open for mining witht external xmrig
+  37889/tcp: P2Pool p2p port
+  37888/tcp: P2Pool mini p2p port
+map:
+- addon_config:rw
+options:
+  p2pool_conf_overrides:
+  - property: no-cache
+    value: ''
+  - property: no-randomx
+    value: ''
+  p2pool_loglevel: '1'
+schema:
+  p2pool_conf_overrides:
+  - property: str
+    value: str
+  host: str
+  monero_wallet: password
+  p2pool_mini_sidechain: bool?
+  p2pool_UPnP_port_forwarding: bool?
+  p2pool_UPnP_portstratum_forwarding: bool?
+  p2pool_print_status: int(1,)?
+  p2pool_loglevel: list(0|1|2|3|4|5|6)?
+image: ghcr.io/casse-boubou/p2pool/{arch}

@@ -1,0 +1,30 @@
+---
+configuration:
+  p2pool_conf_overrides:
+    name: Configutaions avancées de P2pool
+    description: Configuration en ligne de commande de P2pool.
+  host:
+    name: Host IP.
+    description: Adresse IP de votre noeud Monero.
+  monero_wallet:
+    name: Adresse du wallet monero
+    description: Adresse du wallet monero.
+  p2pool_mini_sidechain:
+    name: Ajouter le paramètre --mini
+    description: Se connecter à la chaine p2pool-mini.
+  p2pool_UPnP_port_forwarding:
+    name: Ajouter le transfert de port UPnP
+    description: Activez ou désactivez le transfert de port UPnP. (37887 ou 37888 pour mini)
+  p2pool_UPnP_portstratum_forwarding:
+    name: Ajouter le transfert de port UPnP Stratum
+    description: Activez ou désactivez le transfert du port UPnP Stratum (3333).
+  p2pool_print_status:
+    name: P2pool print status (minutes)
+    description: Interval de temps en minutes pour afficher le statut.
+  p2pool_loglevel:
+    name: P2pool loglevel
+    description: Verbosité du journal, nombre entier compris entre 0 et 6.
+network:
+  3333/tcp: Port ouvert pour le minage avec xmrig externe.
+  37889/tcp: P2Pool p2p port
+  37888/tcp: P2Pool mini p2p port
