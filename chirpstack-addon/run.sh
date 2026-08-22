@@ -113,11 +113,18 @@ cat > "${CONF_DIR}/chirpstack.toml" <<EOF
   enabled=["mqtt"]
 
   [integration.mqtt]
-    servers=["${MQTT_URI}"]
+    server="${MQTT_URI}"
     username="${MQTT_USER}"
     password="${MQTT_PASS}"
     json=true
 EOF
+
+# Guard: ChirpStack silently ignores unknown TOML keys and falls back to its
+# built-in default of tcp://localhost:1883. That failure mode looks like a
+# broker outage in the log, so assert the key we just wrote is the real one.
+if ! grep -qE '^\s*server="' "${CONF_DIR}/chirpstack.toml"; then
+    bashio::exit.nok "chirpstack.toml is missing the integration MQTT 'server' key"
+fi
 
 # --- Gateway Bridge ---------------------------------------------------------
 # The topic templates MUST carry the region as a prefix, because ChirpStack
