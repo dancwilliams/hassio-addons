@@ -1,0 +1,8 @@
+# Base images. Without this file the Supervisor passes no BUILD_FROM and the
+# build fails at "base name should not be blank".
+#
+# The HA base images provide s6-overlay and bashio, which run.sh needs for
+# with-contenv and bashio::config / bashio::services.
+build_from:
+  amd64: ghcr.io/home-assistant/amd64-base:3.21
+  aarch64: ghcr.io/home-assistant/aarch64-base:3.21

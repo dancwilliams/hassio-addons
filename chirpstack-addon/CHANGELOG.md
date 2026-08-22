@@ -10,3 +10,4 @@ Initial release.
 - Bundled Redis, bound to loopback only
 - Region definitions pulled from the matching upstream git tag at build time
 - Requests no privileges, no host networking, and no device mappings
+- Ships build.yaml pinning the Home Assistant Alpine 3.21 base images
