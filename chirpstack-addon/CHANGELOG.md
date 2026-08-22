@@ -29,3 +29,11 @@ Initial release.
   platform — so multi-arch support is retained, not traded away.
 - Architecture for the upstream artifact download now falls back to the build
   platform if the Supervisor does not supply `BUILD_ARCH`.
+
+## 4.19.1-4
+
+- Added a `webui` link so the add-on page gets an "Open Web UI" button.
+  Ingress is deliberately not used: the ChirpStack UI references its assets
+  with absolute paths and offers no base-path option, so it cannot be served
+  under the ingress sub-path. Port 3001 could not use ingress in any case,
+  since the gateway is an external client rather than a browser session.
