@@ -1,0 +1,36 @@
+{
+  "name": "ChirpStack LoRaWAN",
+  "version": "4.19.1",
+  "slug": "chirpstack",
+  "description": "Self-hosted LoRaWAN Network Server - ChirpStack 4.19.1 (SQLite) plus Gateway Bridge 4.1.2. Runs entirely on your LAN with no cloud dependency.",
+  "url": "https://github.com/dancwilliams/hassio-addons/tree/master/chirpstack",
+  "arch": ["amd64", "aarch64"],
+  "startup": "services",
+  "boot": "auto",
+  "init": false,
+  "services": ["mqtt:want"],
+  "ports": {
+    "8080/tcp": 8080,
+    "3001/tcp": 3001
+  },
+  "ports_description": {
+    "8080/tcp": "ChirpStack web UI",
+    "3001/tcp": "LoRaWAN Basic Station endpoint - point your gateway's LNS URI here"
+  },
+  "options": {
+    "region": "us915_1",
+    "mqtt_host": "",
+    "mqtt_port": 1883,
+    "mqtt_username": "",
+    "mqtt_password": "",
+    "log_level": "info"
+  },
+  "schema": {
+    "region": "list(us915_0|us915_1|us915_2|us915_3|us915_4|us915_5|us915_6|us915_7|eu868|as923|as923_2|as923_3|as923_4|au915_0|au915_1|in865|kr920|ru864)",
+    "mqtt_host": "str?",
+    "mqtt_port": "port?",
+    "mqtt_username": "str?",
+    "mqtt_password": "password?",
+    "log_level": "list(trace|debug|info|warn|error)"
+  }
+}
