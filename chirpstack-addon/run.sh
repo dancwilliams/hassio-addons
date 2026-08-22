@@ -58,16 +58,57 @@ fi
 API_SECRET=$(cat /data/api_secret)
 
 # --- Region-specific radio parameters for the Basic Station backend ---------
+#
+# The concentrator block below is NOT optional. It is commented out in the
+# upstream gateway-bridge sample config, and leaving it out produces a
+# router-config with no channel plan: the gateway connects, receives it,
+# silently drops the connection and retries forever. Nothing in the
+# gateway-bridge log says why.
+#
+# US915/AU915 channel plans are formulaic:
+#   uplink ch i      = BASE + 0.2 MHz * i        (sub-band n => channels 8n..8n+7)
+#   500 kHz uplink   = STD_BASE + 1.6 MHz * n
 case "${REGION}" in
-    us915_*) GB_REGION="US915"; FREQ_MIN=902000000; FREQ_MAX=928000000 ;;
-    au915_*) GB_REGION="AU915"; FREQ_MIN=915000000; FREQ_MAX=928000000 ;;
-    eu868)   GB_REGION="EU868"; FREQ_MIN=863000000; FREQ_MAX=870000000 ;;
-    as923*)  GB_REGION="AS923"; FREQ_MIN=915000000; FREQ_MAX=928000000 ;;
-    in865)   GB_REGION="IN865"; FREQ_MIN=865000000; FREQ_MAX=867000000 ;;
-    kr920)   GB_REGION="KR920"; FREQ_MIN=920000000; FREQ_MAX=923000000 ;;
-    ru864)   GB_REGION="RU864"; FREQ_MIN=863000000; FREQ_MAX=870000000 ;;
-    *) bashio::exit.nok "No Basic Station radio profile for region '${REGION}'." ;;
+    us915_*)
+        GB_REGION="US915"; FREQ_MIN=902000000; FREQ_MAX=928000000
+        SB="${REGION#us915_}"
+        CH0=$(( 902300000 + SB * 1600000 ))
+        STD_FREQ=$(( 903000000 + SB * 1600000 ))
+        STD_BW=500000; STD_SF=8; FSK_FREQ=0
+        ;;
+    au915_*)
+        GB_REGION="AU915"; FREQ_MIN=915000000; FREQ_MAX=928000000
+        SB="${REGION#au915_}"
+        CH0=$(( 915200000 + SB * 1600000 ))
+        STD_FREQ=$(( 915900000 + SB * 1600000 ))
+        STD_BW=500000; STD_SF=8; FSK_FREQ=0
+        ;;
+    eu868)
+        GB_REGION="EU868"; FREQ_MIN=863000000; FREQ_MAX=870000000
+        CH0=""   # EU868 channels are not a uniform ladder; listed explicitly
+        EU_FREQS="868100000 868300000 868500000 867100000 867300000 867500000 867700000 867900000"
+        STD_FREQ=868300000; STD_BW=250000; STD_SF=7; FSK_FREQ=868800000
+        ;;
+    *)
+        bashio::exit.nok \
+            "Region '${REGION}' has no verified concentrator channel plan in this add-on. Supported: us915_0..7, au915_0..1, eu868."
+        ;;
 esac
+
+# Build the multi-SF frequency list
+if [ -n "${CH0}" ]; then
+    MULTI_SF=""
+    for i in 0 1 2 3 4 5 6 7; do
+        MULTI_SF="${MULTI_SF}      $(( CH0 + i * 200000 )),
+"
+    done
+else
+    MULTI_SF=""
+    for f in ${EU_FREQS}; do
+        MULTI_SF="${MULTI_SF}      ${f},
+"
+    done
+fi
 
 # --- Region file ------------------------------------------------------------
 # Rewrite ONLY the keys inside [regions.gateway.backend.mqtt]. A blanket sed
@@ -141,6 +182,20 @@ cat > "${GB_CONF}" <<EOF
     frequency_min=${FREQ_MIN}
     frequency_max=${FREQ_MAX}
 
+  [[backend.basic_station.concentrators]]
+
+    [backend.basic_station.concentrators.multi_sf]
+    frequencies=[
+${MULTI_SF}    ]
+
+    [backend.basic_station.concentrators.lora_std]
+    frequency=${STD_FREQ}
+    bandwidth=${STD_BW}
+    spreading_factor=${STD_SF}
+
+    [backend.basic_station.concentrators.fsk]
+    frequency=${FSK_FREQ}
+
 [integration]
   marshaler="protobuf"
 
@@ -157,7 +212,14 @@ cat > "${GB_CONF}" <<EOF
         password="${MQTT_PASS}"
 EOF
 
+# Guard: without a concentrator block the gateway receives a router-config with
+# no channel plan, then connects/disconnects in a loop with no stated reason.
+if ! grep -q '\[\[backend.basic_station.concentrators\]\]' "${GB_CONF}"; then
+    bashio::exit.nok "gateway-bridge config has no concentrator channel plan"
+fi
+
 bashio::log.info "Region ${REGION} (${GB_REGION}), broker ${MQTT_URI} as '${MQTT_USER}'"
+bashio::log.info "Radio plan: 8x multi-SF from $(( CH0 ? CH0 : 0 ))Hz, LoRa-STD ${STD_FREQ}Hz BW${STD_BW} SF${STD_SF}"
 bashio::log.info "Basic Station endpoint: ws://<this-host>:3001"
 
 # --- Launch -----------------------------------------------------------------

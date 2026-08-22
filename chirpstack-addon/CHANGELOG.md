@@ -37,3 +37,18 @@ Initial release.
   with absolute paths and offers no base-path option, so it cannot be served
   under the ingress sub-path. Port 3001 could not use ingress in any case,
   since the gateway is an external client rather than a browser session.
+
+## 4.19.1-5
+
+- Fix: the gateway-bridge config had no `[[backend.basic_station.concentrators]]`
+  block, so the router-config sent to the gateway carried no channel plan. The
+  gateway connected, received it, dropped the socket and retried every ~10s with
+  nothing in either log explaining why. The block is commented out in the
+  upstream sample config, which is easy to miss.
+  Channel plans are now derived from the region (US915/AU915 sub-bands are
+  formulaic; EU868 is listed explicitly) and verified against the frequencies a
+  working gateway actually reports.
+- Startup now asserts the concentrator block exists, and logs the radio plan.
+- Region list narrowed to the plans that are actually implemented. Unsupported
+  regions now fail at startup with a clear message rather than producing a
+  silently broken config.
