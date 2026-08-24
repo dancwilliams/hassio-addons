@@ -1,5 +1,10 @@
 # Home Assistant Add-on: AWNET
 
+> **Deprecated (2026-08).** This add-on is no longer maintained; the code stays for reference only. Use one of these instead:
+>
+> - [awnet_local](https://github.com/tlskinneriv/awnet_local) (HACS) - the direct replacement. Same "Custom Server" setup on the console, proper devices and entities.
+> - The core [Ecowitt](https://www.home-assistant.io/integrations/ecowitt) integration, if your console can send the Ecowitt protocol. Consoles that only speak the Ambient Weather protocol need the [GSzabados/ecowitt](https://github.com/GSzabados/ecowitt) HACS fork until [aioecowitt#174](https://github.com/home-assistant-libs/aioecowitt/pull/174) is merged.
+
 Local access between Ambient Weather weatherstation and Home Assistant.
 
 ## About

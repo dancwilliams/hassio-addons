@@ -1,4 +1,5 @@
 #!/usr/bin/with-contenv bashio
+# shellcheck shell=bash
 # =============================================================================
 # ChirpStack LoRaWAN add-on
 #
@@ -12,19 +13,24 @@
 # =============================================================================
 set -e
 
-REGION=$(bashio::config 'region')
-LOG_LEVEL=$(bashio::config 'log_level')
+# Options are read straight from the file the Supervisor writes. bashio::config
+# would fetch the same data over the Supervisor API, which makes the add-on
+# impossible to boot anywhere else (the CI smoke test runs it under plain docker).
+opt() { jq -r --arg k "$1" '.[$k] // empty' /data/options.json; }
+
+REGION=$(opt region)
+LOG_LEVEL=$(opt log_level)
 
 # --- MQTT credentials -------------------------------------------------------
 # Preferred source is the Supervisor's mqtt service (declared as "mqtt:want" in
 # config.json), which hands us credentials for the Mosquitto add-on without
 # anyone creating an account or typing a password into the add-on options.
 # Setting mqtt_host explicitly overrides that, for an external broker.
-if bashio::config.has_value 'mqtt_host'; then
-    MQTT_HOST=$(bashio::config 'mqtt_host')
-    MQTT_PORT=$(bashio::config 'mqtt_port')
-    MQTT_USER=$(bashio::config 'mqtt_username')
-    MQTT_PASS=$(bashio::config 'mqtt_password')
+MQTT_HOST=$(opt mqtt_host)
+if [ -n "${MQTT_HOST}" ]; then
+    MQTT_PORT=$(opt mqtt_port)
+    MQTT_USER=$(opt mqtt_username)
+    MQTT_PASS=$(opt mqtt_password)
     bashio::log.info "MQTT: using broker from add-on options"
 elif bashio::services.available "mqtt"; then
     MQTT_HOST=$(bashio::services 'mqtt' 'host')

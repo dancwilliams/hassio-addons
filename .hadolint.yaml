@@ -1,0 +1,5 @@
+---
+ignored:
+  # Alpine package versions churn with every base-image release; pinning them
+  # just breaks the build without adding reproducibility (the base is pinned).
+  - DL3018

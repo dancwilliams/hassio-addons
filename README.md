@@ -1,36 +1,33 @@
-# Hass.io Add-ons for Home Assistant
+# Home Assistant Add-ons
 
-[![License][license-shield]](LICENSE.md)
-
-## About
-
-This repository collects all of my Hass.io add-ons for easier installation.
+[![License][license-shield]](LICENSE)
 
 ## Installation
 
-Follow [the official instructions](https://home-assistant.io/hassio/installing_third_party_addons/) on the Home Assistant website and use the following URL:
+Settings > Add-ons > Add-on Store > three-dot menu > Repositories, and add:
+
 ```txt
 https://github.com/dancwilliams/hassio-addons
 ```
 
-## Add-ons provided by this repository
+## Add-ons
 
-### [Dropbox Sync][addon-dropbox-sync]
+### [ChirpStack LoRaWAN](chirpstack-addon/)
 
-![Supports armhf Architecture][dropbox-sync-armhf-shield]
-![Supports aarch64 Architecture][dropbox-sync-aarch64-shield]
-![Supports amd64 Architecture][dropbox-sync-amd64-shield]
-![Supports i386 Architecture][dropbox-sync-i386-shield]
-![Docker Pulls][dropbox-sync-pulls-shield]
+![amd64][amd64-shield] ![aarch64][aarch64-shield]
 
-Upload your Hass.io backups to Dropbox.
+Self-hosted LoRaWAN Network Server: ChirpStack (SQLite build) plus Gateway
+Bridge with a Basic Station endpoint, publishing to your own MQTT broker.
+No cloud, no privileges, no device mappings.
 
-[:books: Dropbox Sync add-on documentation][addon-dropbox-sync]
+[Documentation](chirpstack-addon/DOCS.md) · [Changelog](chirpstack-addon/CHANGELOG.md)
 
-[addon-dropbox-sync]: https://github.com/dancwilliams/hassio-dropbox-sync
-[dropbox-sync-armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg?style=flat
-[dropbox-sync-aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg?style=flat
-[dropbox-sync-amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg?style=flat
-[dropbox-sync-i386-shield]: https://img.shields.io/badge/i386-yes-green.svg?style=flat
-[dropbox-sync-pulls-shield]: https://img.shields.io/docker/pulls/dancwilliams/dropbox-sync-armhf.svg?style=flat
+### [AWNET to HASS](awnet/) - deprecated
+
+Pushed Ambient Weather console data into a Home Assistant sensor. Superseded
+by [awnet_local](https://github.com/tlskinneriv/awnet_local) and the core
+Ecowitt integration; kept for reference only.
+
 [license-shield]: https://img.shields.io/github/license/dancwilliams/hassio-addons.svg?style=flat
+[amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg?style=flat
+[aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg?style=flat

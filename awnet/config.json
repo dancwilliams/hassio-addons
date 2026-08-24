@@ -1,7 +1,9 @@
 {
-  "name": "AWNET to HASS",
-  "version": "0.1.47",
+  "name": "AWNET to HASS [deprecated]",
+  "version": "0.1.48",
   "slug": "awnet_to_hass",
+  "stage": "deprecated",
+  "url": "https://github.com/dancwilliams/hassio-addons/tree/master/awnet",
   "description": "Addon to capture local Ambient Weather data from ObserverIP",
   "arch": [
     "armhf",

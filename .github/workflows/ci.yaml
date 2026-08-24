@@ -1,0 +1,83 @@
+name: ci
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: frenck/action-addon-linter@v2
+        with:
+          path: ./chirpstack-addon
+      - uses: frenck/action-addon-linter@v2
+        with:
+          path: ./awnet
+      - name: Versions agree (Dockerfile ARG, config.json, CHANGELOG)
+        working-directory: chirpstack-addon
+        run: |
+          cs=$(sed -n 's/^ARG CHIRPSTACK_VERSION=//p' Dockerfile)
+          v=$(jq -r .version config.json)
+          case "$v" in "$cs"|"$cs"-*) ;; *) echo "config.json version $v does not match CHIRPSTACK_VERSION $cs"; exit 1 ;; esac
+          grep -q "^## $v\$" CHANGELOG.md || { echo "CHANGELOG.md has no '## $v' entry"; exit 1; }
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker run --rm -v "$PWD:/mnt" -w /mnt koalaman/shellcheck:stable smoke-test.sh chirpstack-addon/run.sh awnet/run.sh
+
+  hadolint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: |
+          for d in chirpstack-addon awnet; do
+            echo "hadolint: $d/Dockerfile"
+            docker run --rm -i -v "$PWD/.hadolint.yaml:/.hadolint.yaml:ro" hadolint/hadolint < "$d/Dockerfile"
+          done
+
+  build:
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: aarch64
+            runner: ubuntu-24.04-arm   # native arm64, no QEMU
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          context: ./chirpstack-addon
+          build-args: BUILD_ARCH=${{ matrix.arch }}
+          load: true
+          tags: chirpstack:${{ matrix.arch }}
+      - name: Smoke test
+        run: ./smoke-test.sh chirpstack:${{ matrix.arch }}
+      - name: Build awnet (deprecated, but an update must still build)
+        if: matrix.arch == 'amd64'
+        run: docker build awnet
+      - uses: aquasecurity/trivy-action@v0.36.0
+        if: matrix.arch == 'amd64'
+        with:
+          image-ref: chirpstack:amd64
+          format: sarif
+          exit-code: 0
+          severity: CRITICAL,HIGH
+          output: trivy-results.sarif
+      - uses: github/codeql-action/upload-sarif@v4
+        if: matrix.arch == 'amd64'
+        with:
+          sarif_file: trivy-results.sarif

@@ -1,9 +1,9 @@
 {
   "name": "ChirpStack LoRaWAN",
-  "version": "4.19.1-5",
+  "version": "4.19.1-6",
   "slug": "chirpstack",
   "description": "Self-hosted LoRaWAN Network Server - ChirpStack 4.19.1 (SQLite) plus Gateway Bridge 4.1.2. Runs entirely on your LAN with no cloud dependency.",
-  "url": "https://github.com/dancwilliams/hassio-addons/tree/master/chirpstack",
+  "url": "https://github.com/dancwilliams/hassio-addons/tree/master/chirpstack-addon",
   "arch": [
     "amd64",
     "aarch64"
