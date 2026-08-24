@@ -6,14 +6,9 @@
   "url": "https://github.com/dancwilliams/hassio-addons/tree/master/awnet",
   "description": "Addon to capture local Ambient Weather data from ObserverIP",
   "arch": [
-    "armhf",
-    "armv7",
     "aarch64",
-    "amd64",
-    "i386"
+    "amd64"
   ],
-  "startup": "application",
-  "boot": "auto",
   "homeassistant_api": true,
   "options": {
     "entity_id": "WS2902B"

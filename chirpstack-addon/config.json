@@ -9,7 +9,6 @@
     "aarch64"
   ],
   "startup": "services",
-  "boot": "auto",
   "init": false,
   "services": [
     "mqtt:want"
