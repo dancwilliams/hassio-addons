@@ -4,7 +4,7 @@ A self-hosted LoRaWAN Network Server. Your gateway talks to this add-on over you
 own LAN, this add-on publishes decoded uplinks to your own MQTT broker, and
 Home Assistant reads them from there. Nothing leaves the building.
 
-Bundles ChirpStack 4.19.1 (SQLite build) and ChirpStack Gateway Bridge 4.1.2.
+Bundles ChirpStack 4.19.2 (SQLite build) and ChirpStack Gateway Bridge 4.1.2.
 
 ## Before you start
 

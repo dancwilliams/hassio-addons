@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.19.2
+
+- ChirpStack 4.19.1 -> 4.19.2 ([release notes](https://github.com/chirpstack/chirpstack/releases/tag/v4.19.2))
+
 ## 4.19.1-6
 
 - Options are now read from `/data/options.json` with `jq` instead of
