@@ -10,7 +10,7 @@ FROM ghcr.io/home-assistant/base:3.21
 
 # Upstream versions. Bumping these two lines (plus "version" in config.json)
 # is the entire update procedure.
-ARG CHIRPSTACK_VERSION=4.19.1
+ARG CHIRPSTACK_VERSION=4.19.2
 ARG GATEWAY_BRIDGE_VERSION=4.1.2
 
 # Supplied by the Supervisor as --build-arg. Left empty so the RUN below can

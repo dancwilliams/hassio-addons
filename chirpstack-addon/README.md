@@ -1,6 +1,6 @@
 # ChirpStack LoRaWAN add-on
 
-Self-hosted LoRaWAN Network Server for Home Assistant — ChirpStack 4.19.1 plus
+Self-hosted LoRaWAN Network Server for Home Assistant — ChirpStack 4.19.2 plus
 Gateway Bridge 4.1.2, backed by SQLite.
 
 Point a Basic Station gateway at `ws://<ha-ip>:3001`, and decoded uplinks land
