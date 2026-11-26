@@ -32,9 +32,12 @@ docs, not dev notes.
 opens a `bump/<version>` PR when ChirpStack or the Gateway Bridge releases
 (only once the binaries exist on artifacts.chirpstack.io). It edits the
 Dockerfile ARGs, the version strings in `config.json`/`README.md`/`DOCS.md`,
-and prepends a CHANGELOG entry. Manual equivalent: same edits by hand.
+and prepends a CHANGELOG entry linking every release in the range. Once the
+new PR is open, it closes any older open `bump/*` PR (whose title starts with
+`Bump ChirpStack add-on to `) and deletes its branch. Manual equivalent: same
+edits by hand.
 
-Before merging a bump, read the upstream release notes for changes to
+Before merging a bump, read all linked upstream release notes for changes to
 `chirpstack.toml` keys or the region files - `run.sh` generates both.
 
 ## Testing
