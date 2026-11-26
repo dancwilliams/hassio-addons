@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.20.2
+
+- ChirpStack 4.20.0 -> 4.20.2 (release notes: [4.20.2](https://github.com/chirpstack/chirpstack/releases/tag/v4.20.2), [4.20.1](https://github.com/chirpstack/chirpstack/releases/tag/v4.20.1))
+
 ## 4.20.0
 
 - ChirpStack 4.19.2 -> 4.20.0 ([release notes](https://github.com/chirpstack/chirpstack/releases/tag/v4.20.0))
