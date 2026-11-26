@@ -55,6 +55,26 @@ def artifacts_published(url_tmpl, v):
     return True
 
 
+def ver(v):
+    return tuple(map(int, v.split(".")))
+
+
+assert ver("4.20.10") > ver("4.20.2")  # the reason this is not a string compare
+
+
+def released_between(gh_repo, old, new):
+    """Stable releases after old up to new, newest first.
+
+    A bump can skip versions, and the skipped one may hold the config change. The API
+    lists by date with prereleases and backports interleaved, so compare versions.
+    """
+    # shortcut: first 30 releases only, page if a bump ever spans more
+    _, body = http(f"https://api.github.com/repos/{gh_repo}/releases?per_page=30")
+    tags = (r["tag_name"].lstrip("v") for r in json.loads(body))
+    return sorted((t for t in tags if re.fullmatch(r"\d+(\.\d+)+", t) and ver(old) < ver(t) <= ver(new)),
+                  key=ver, reverse=True) or [new]
+
+
 def git(cmd, check=True):
     return subprocess.run(f"git {cmd}", shell=True, check=check,
                           capture_output=True, text=True).stdout.strip()
@@ -108,13 +128,23 @@ if git(f"ls-remote --heads origin {branch}", check=False):
     print(f"Branch {branch} already exists on the remote; PR already opened. Nothing to do.")
     sys.exit(0)
 
+stale = []
+if repo:  # unset on a local dry run
+    _, resp = http(f"https://api.github.com/repos/{repo}/pulls?state=open&per_page=100")
+    stale = [p for p in json.loads(resp) if p["head"]["ref"].startswith("bump/")
+             and p["title"].startswith("Bump ChirpStack add-on to ")
+             and p["head"]["repo"] and p["head"]["repo"]["full_name"] == repo]
+    print("Superseded bump PRs:", ", ".join(f"#{p['number']}" for p in stale) or "none")
+
 for a in changed:
     for path in ("Dockerfile", "config.json", "README.md", "DOCS.md"):
         edit(path, lambda s: replace_version(s, current[a], new[a]))
 edit("config.json", lambda s: re.sub(r'"version": "[^"]+"', f'"version": "{new_ver}"', s, count=1))
 notes = "".join(
-    f"- {UPSTREAM[a][1]} {current[a]} -> {new[a]} "
-    f"([release notes](https://github.com/{UPSTREAM[a][0]}/releases/tag/v{new[a]}))\n"
+    f"- {UPSTREAM[a][1]} {current[a]} -> {new[a]} (release notes: "
+    + ", ".join(f"[{v}](https://github.com/{UPSTREAM[a][0]}/releases/tag/v{v})"
+                for v in released_between(UPSTREAM[a][0], current[a], new[a]))
+    + ")\n"
     for a in changed
 )
 edit("CHANGELOG.md", lambda s: s.replace("# Changelog\n\n", f"# Changelog\n\n## {new_ver}\n\n{notes}\n", 1))
@@ -138,10 +168,11 @@ git(f"add {ADDON}")
 git(f'commit -m "Bump ChirpStack add-on to {new_ver}"')
 git(f"push origin {branch}")
 
+supersedes = ("Supersedes " + ", ".join(f"#{p['number']}" for p in stale) + ".\n\n") if stale else ""
 body = f"""Automated bump `{old_ver}` -> `{new_ver}`.
 
 {notes}
-**Before merging:**
+{supersedes}**Before merging:**
 - Read the upstream release notes for changes to `chirpstack.toml` keys or the region files; `run.sh` generates both.
 - Confirm the CI build and smoke test pass on this PR.
 
@@ -153,3 +184,8 @@ status, resp = http(
                      "head": branch, "base": "master"}).encode(),
 )
 print(f"PR opened: {json.loads(resp)['html_url']}")
+
+for p in stale:
+    http(f"https://api.github.com/repos/{repo}/pulls/{p['number']}", method="PATCH", data=b'{"state":"closed"}')
+    http(f"https://api.github.com/repos/{repo}/git/refs/heads/{p['head']['ref']}", method="DELETE")
+    print(f"Closed superseded #{p['number']}")
