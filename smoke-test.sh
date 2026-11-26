@@ -32,9 +32,11 @@ for _ in $(seq 1 30); do
 done
 curl -sf --max-time 2 -o /dev/null http://127.0.0.1:18080/ || fail "web UI never answered on 8080"
 timeout 3 bash -c 'exec 3<>/dev/tcp/127.0.0.1/13001' || fail "Basic Station port 3001 not listening"
-docker logs cs-smoke 2>&1 | grep -q 'using broker from add-on options' || fail "did not take the manual-broker path"
+# No grep -q on a docker logs pipe: it exits at the first match, docker logs dies of
+# SIGPIPE, and pipefail then reports a match as a failure (or hides one on the && line).
+docker logs cs-smoke 2>&1 | grep 'using broker from add-on options' >/dev/null || fail "did not take the manual-broker path"
 sleep 3
 n=$(docker logs cs-mqtt 2>&1 | grep -c 'New client connected' || true)
 [ "$n" -ge 2 ] || fail "expected ChirpStack + Gateway Bridge on the broker, saw $n client(s)"
-docker logs cs-smoke 2>&1 | grep -qi 'process exited' && fail "a process exited"
+docker logs cs-smoke 2>&1 | grep -i 'process exited' >/dev/null && fail "a process exited"
 echo "smoke OK ($n MQTT clients)"
